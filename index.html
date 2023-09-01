@@ -11,7 +11,7 @@
     <div class="container">
         <h1>Detect Android Device</h1>
         <button id="detectButton" class="btn btn-primary">اكتشاف نوع الجهاز</button>
-        <p id="deviceInfo"></p>
+        <ul id="deviceInfo" style="list-style-type:none;"></ul>
     </div>
 
     <!-- تضمين ملف JavaScript -->
@@ -21,14 +21,25 @@
             const deviceInfo = document.getElementById('deviceInfo');
 
             detectButton.addEventListener('click', function () {
-                const userAgent = navigator.userAgent;
+                if (navigator.permissions) {
+                    navigator.permissions.query({ name: 'userAgent' }).then(permissionStatus => {
+                        if (permissionStatus.state === 'granted') {
+                            const userAgent = navigator.userAgent;
+                            const androidVersion = userAgent.includes('Android') ? parseFloat(userAgent.match(/Android\s([0-9\.]*)/)[1]) : 'غير معروف';
+                            const deviceType = userAgent.match(/\((.*?)\)/)[1] || 'غير معروف';
 
-                if (userAgent.includes('Android')) {
-                    const androidVersion = parseFloat(userAgent.match(/Android\s([0-9\.]*)/)[1]);
-                    const deviceType = userAgent.match(/\((.*?)\)/)[1];
-                    deviceInfo.textContent = `نوع الجهاز: ${deviceType}، إصدار Android: ${androidVersion}`;
+                            const listItems = [
+                                `نوع الجهاز: ${deviceType}`,
+                                `إصدار Android: ${androidVersion}`,
+                            ];
+
+                            deviceInfo.innerHTML = listItems.map(item => `<li>${item}</li>`).join('');
+                        } else {
+                            deviceInfo.innerHTML = '<li>ليس لديك إذن للوصول إلى معلومات الجهاز.</li>';
+                        }
+                    });
                 } else {
-                    deviceInfo.textContent = 'نوع الجهاز: غير معروف (غير Android)';
+                    deviceInfo.innerHTML = '<li>المتصفح غير مدعوم.</li>';
                 }
             });
         });
