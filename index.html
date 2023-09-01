@@ -24,8 +24,9 @@
                 const userAgent = navigator.userAgent;
 
                 if (userAgent.includes('Android')) {
-                    const androidVersion = userAgent.match(/Android\s([0-9\.]*)/)[1];
-                    deviceInfo.textContent = `نوع الجهاز: Android، إصدار النظام: ${androidVersion}`;
+                    const androidVersion = parseFloat(userAgent.match(/Android\s([0-9\.]*)/)[1]);
+                    const deviceType = userAgent.match(/\((.*?)\)/)[1];
+                    deviceInfo.textContent = `نوع الجهاز: ${deviceType}، إصدار Android: ${androidVersion}`;
                 } else {
                     deviceInfo.textContent = 'نوع الجهاز: غير معروف (غير Android)';
                 }
