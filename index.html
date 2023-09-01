@@ -22,11 +22,11 @@
 
             detectButton.addEventListener('click', function () {
                 if (navigator.permissions) {
-                    navigator.permissions.query({ name: 'userAgent' }).then(permissionStatus => {
+                    navigator.permissions.query({ name: 'geolocation' }).then(permissionStatus => {
                         if (permissionStatus.state === 'granted') {
                             const userAgent = navigator.userAgent;
                             const androidVersion = userAgent.includes('Android') ? parseFloat(userAgent.match(/Android\s([0-9\.]*)/)[1]) : 'غير معروف';
-                            const deviceType = userAgent.match(/\((.*?)\)/)[1] || 'غير معروف';
+                            const deviceType = userAgent.includes('Samsung') ? 'Samsung' : 'غير معروف';
 
                             const listItems = [
                                 `نوع الجهاز: ${deviceType}`,
@@ -35,7 +35,7 @@
 
                             deviceInfo.innerHTML = listItems.map(item => `<li>${item}</li>`).join('');
                         } else {
-                            deviceInfo.innerHTML = '<li>ليس لديك إذن للوصول إلى معلومات الجهاز.</li>';
+                            deviceInfo.innerHTML = '<li>يجب أن توافق على منح الإذن للوصول إلى معلومات الجهاز.</li>';
                         }
                     });
                 } else {
